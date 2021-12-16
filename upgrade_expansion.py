@@ -1,3 +1,4 @@
+import os
 import time
 
 import pyperclip
@@ -13,7 +14,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 def load_saved_game(driver, filename):
     """Load a saved game."""
-    with open(f"saves/{filename}.txt") as fo:
+    with open(f"saves/{filename}") as fo:
         pyperclip.copy(fo.read())
 
     driver.get("https://www.swarmsim.com/#/options")
@@ -62,7 +63,7 @@ def save_game(driver, filename):
     text_field.click()
     webdriver.ActionChains(driver).key_down(Keys.CONTROL).send_keys("c").perform()
 
-    with open(f"saves/{filename}.txt", 'w') as fo:
+    with open(f"saves/{filename}", 'w') as fo:
         fo.write(pyperclip.paste())
 
 
@@ -72,11 +73,13 @@ def main():
     driver.set_window_size(1078, 901)
     driver.get("https://www.swarmsim.com")
 
-    load_saved_game(driver, "2021-12-14_21.11.39-0500")
+    latest_save = sorted(entry.name for entry in os.scandir("saves"))[-1]
+    load_saved_game(driver, latest_save)
 
-    upgrade_expansion(driver, times=30) # 15 hours
+    upgrade_expansion(driver, times=20) # minimum 10 hours
 
-    save_game(driver, time.strftime('%Y-%m-%d_%H.%M.%S%z'))
+    new_save_filename = f"{time.strftime('%Y-%m-%d_%H.%M.%S%z')}.txt"
+    save_game(driver, new_save_filename)
 
     #driver.quit()
 
