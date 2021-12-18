@@ -42,7 +42,7 @@ def upgrade_expansion(driver, times=1):
         driver.find_element(By.CSS_SELECTOR, button).click()
 
         n+=1
-        if n >= times:
+        if n > times:
             break
 
         for m in range(29, -1, -1):
